@@ -16,6 +16,7 @@ import LoadingSpinner from './component/LoadingSpinner/LoadingSpinner';
 import TakeLeaveScreen from './pages/TakeLeaves/TakeLeave';
 import AttendanceScreen from './pages/attendenceScreen/attendenceScreen';
 import EmployeesList from './pages/EmployeeList/EmployeList';
+import EmployeeMonthData from './pages/EmployeeMonthData/EmpMonDataMain';
 const Stack = createNativeStackNavigator();
 
 function Main() {
@@ -45,18 +46,18 @@ function Main() {
                 <Stack.Navigator screenOptions={{ headerShown: false }}>
                     {
                         token == "0"
-                        // true
                          ?
                             <>
-                                <Stack.Screen name="Home" component={Home} />
-                                <Stack.Screen name="Signup" component={SignUpForm} />
-                                <Stack.Screen name="Signup2" component={SignUpForm2} />
-                                <Stack.Screen name="Signup3" component={SignUpForm4} />
-                                <Stack.Screen name="Login" component={Login} />
-                                <Stack.Screen name="Profile" component={Profile} />
-                                <Stack.Screen name="Leave" component={TakeLeaveScreen} />
+                            <Stack.Screen name="Home" component={Home} />
+                            <Stack.Screen name="Signup" component={SignUpForm} />
+                            <Stack.Screen name="Signup2" component={SignUpForm2} />
+                            <Stack.Screen name="Signup3" component={SignUpForm4} />
+                            <Stack.Screen name="Login" component={Login} />
+                            <Stack.Screen name="Profile" component={Profile} />
+                            <Stack.Screen name="Leave" component={TakeLeaveScreen} />
                             <Stack.Screen name="Attendence" component={AttendanceScreen} />
                             <Stack.Screen name="EmployeeList" component={EmployeesList} />
+                            <Stack.Screen name="MonthData" component={EmployeeMonthData} />
                             </>
                             :
                             <>
@@ -64,6 +65,7 @@ function Main() {
                             <Stack.Screen name="Leave" component={TakeLeaveScreen} />
                             <Stack.Screen name="Attendence" component={AttendanceScreen} />
                             <Stack.Screen name="EmployeeList" component={EmployeesList} />
+                            <Stack.Screen name="MonthData" component={EmployeeMonthData} />
                             </>
                     }
                 </Stack.Navigator>

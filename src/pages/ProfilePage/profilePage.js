@@ -131,7 +131,7 @@ const Profile = (m_props) => {
                 }} width={"100%"} />
                 <Btn3 textColor={"white"} btnLabel="My Detail" Press={() => {
                     setAttendenceObj(false)
-                    m_props.navigation.navigate("Attendence", { employee });
+                    m_props.navigation.navigate("Attendence", { employee, "year" : new Date().getFullYear() });
                 }} width={"100%"} />
                 {employee.is_superuser ? <Btn3 textColor={"white"} btnLabel="Employee Detail" Press={() => {
                     m_props.navigation.navigate("EmployeeList");

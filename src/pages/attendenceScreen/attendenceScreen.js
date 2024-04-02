@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage for local storage
 import { DataContext } from '../../context';
@@ -7,14 +7,17 @@ import { Button, Card } from 'react-native-paper';
 import MyButton from '../../customButton';
 import { useRoute } from '@react-navigation/native';
 
-const AttendanceScreen = () => {
+const AttendanceScreen = ({ navigation }) => {
 
-  const { getAttendenceDetailByYear, attendenceObj } = useContext(DataContext);
+  
+  const { getAttendenceDetailByYear, attendenceObj,setEmployeeMonthData } = useContext(DataContext);
   const route = useRoute();
-  const { employee } = route.params;
+  const { employee, year } = route.params;
+  const [selectedYear, setSelectedYear] = useState(year);
 console.log(route)
   useEffect(() => {
-    getAttendenceDetailByYear(employee.id);
+    getAttendenceDetailByYear(employee.id, year);
+    setSelectedYear(year);
   }, []);
 
   useEffect(() => {
@@ -31,10 +34,17 @@ console.log(route)
     <View style={{
       marginTop : 50
     }}>
-      <MyButton title={"Attendence 2024"} onPress={()=>{}} />
+      <MyButton title={employee.name} onPress={()=>{}} />
+      <MyButton title={new Date().getFullYear()} onPress={()=>{}} />
+
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} style={{marginBottom : 40}}>
       {Object.entries(attendenceObj).map(([month, stats], index) => (
-        <Card key={index} style={styles.card}>
+        <Card key={index} style={styles.card} 
+        onPress={()=>{
+  setEmployeeMonthData(null);
+          navigation.navigate('MonthData', { month, "year" : selectedYear , employee_id : employee.id});
+        }}
+        >
           <Card.Content>
             <Text style={styles.monthText}>{month}</Text>
             <View style={styles.statsContainer}>

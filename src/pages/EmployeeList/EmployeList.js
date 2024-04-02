@@ -35,7 +35,7 @@ const EmployeesList = ({ navigation }) => {
               style={[styles.touchable, index % 2 === 0 ? styles.purpleBackground : styles.customBackground]}
               onPress={() => {
                 setAttendenceObj(false);
-                navigation.navigate('Attendence', { employee });
+                navigation.navigate('Attendence', { employee , "year" : new Date().getFullYear()});
               }}
             >
               <Text style={styles.employeeName}>{employee.name}</Text>

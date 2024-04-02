@@ -10,7 +10,8 @@ const DataProviderFuncComp = ({ children }) => {
   const [checkinId, setCheckInId] = useState();
   const [token, setToken] = useState(false);
   const [attendenceObj, setAttendenceObj] = useState();
-  const [employeesDetail, setEmployeeDetail] = useState()
+  const [employeesDetail, setEmployeeDetail] = useState();
+  const [employeeMonthData, setEmployeeMonthData] = useState();
 
   const getCheckInId = async () => {
     AsyncStorage.getItem("attendence_id").then((value) => {
@@ -18,12 +19,15 @@ const DataProviderFuncComp = ({ children }) => {
     });
   }
 
-  const getAttendenceDetailByYear = async (id) => {
+  const getAttendenceDetailByYear = async (id, year) => {
     try {
       const token = await AsyncStorage.getItem('accessToken');
       axios.get(`${API_BASE_URL}/checkin/${id}/`, {
         headers: {
           "Authorization": `Bearer ${token}`
+        },
+        params : {
+          year : year
         }
       }).then((response) => {
       setAttendenceObj(response.data);
@@ -131,7 +135,28 @@ console.log(error)
     }
   }
 
-
+const monthDataFunc = async (year, month, employee_id)=>{
+  try {
+    const token = await AsyncStorage.getItem('accessToken');
+    axios.get(`${API_BASE_URL}/get_month_data/${employee_id}/`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      },
+      params : {
+        year : year,
+        month : month
+      }
+    }).then(async (response) => {
+      console.log(response.data);
+      setEmployeeMonthData(response.data);
+  }).catch((error) => {
+console.log(error);
+  })
+  } catch (error) {
+    handleErrorFunc(error);
+    setButton(false);
+  }
+}
 
 
   return (
@@ -148,7 +173,11 @@ console.log(error)
         attendenceObj,
         getUserAdmin,
         employeesDetail,
-        setAttendenceObj
+        setAttendenceObj,
+        monthDataFunc,
+        employeeMonthData,
+  setEmployeeMonthData
+
       }}
     >
       {children}
