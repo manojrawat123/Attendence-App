@@ -34,8 +34,7 @@ const route = useRoute()
             borderTopLeftRadius: 30,
             paddingTop: 30,
             alignItems: 'center',
-          }}
->
+          }}>
             <View style={{
               flexDirection: 'row', alignItems: 'flex-start', width : "100%"
             }}>

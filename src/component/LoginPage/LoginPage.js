@@ -66,8 +66,11 @@ const Login = (m_props) => {
                 m_props.navigation.popToTop();
                 m_props.navigation.navigate("Profile");
               }).catch((error) => {
-                handleErrorFunc(error);
-                
+                console.log(error)
+                if(error.response){
+                  console.log({"err.response.data" : err.response.data});
+                }
+                handleErrorFunc(error);                
               }).finally(() => {
                 setButton(false);
               })

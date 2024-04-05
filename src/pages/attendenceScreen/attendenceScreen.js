@@ -36,8 +36,7 @@ console.log(route)
     }}>
       <MyButton title={employee.name} onPress={()=>{}} />
       <MyButton title={new Date().getFullYear()} onPress={()=>{}} />
-
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} style={{marginBottom : 40}}>
+    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} style={{marginBottom : 120}}>
       {Object.entries(attendenceObj).map(([month, stats], index) => (
         <Card key={index} style={styles.card} 
         onPress={()=>{

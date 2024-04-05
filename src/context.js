@@ -47,7 +47,6 @@ const DataProviderFuncComp = ({ children }) => {
           "Authorization": `Bearer ${token}`
         }
       }).then(async (response) => {
-        console.log(response.data);
         setEmployeeDetail(response.data) 
     }).catch((error) => {
 console.log(error)
@@ -147,7 +146,6 @@ const monthDataFunc = async (year, month, employee_id)=>{
         month : month
       }
     }).then(async (response) => {
-      console.log(response.data);
       setEmployeeMonthData(response.data);
   }).catch((error) => {
 console.log(error);
