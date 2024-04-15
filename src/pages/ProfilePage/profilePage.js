@@ -114,8 +114,8 @@ const Profile = (m_props) => {
     return (
         <Background>
             <View style={{ marginHorizontal: 40, marginTop: 100 }}>
-                <Text style={{ color: 'white', fontSize: 64 }}>Let's start</Text>
-                <Text style={{ color: 'white', fontSize: 64, marginBottom: 40 }}>Future</Text>
+                <Text style={{ color: 'white', fontSize: 47 }}>Attendence</Text>
+                <Text style={{ color: 'white', fontSize: 47, marginBottom: 40 }}>App</Text>
                 <Toast ref={(ref) => Toast.setRef(ref)} />
                 {
                     checkinId ?
@@ -126,8 +126,8 @@ const Profile = (m_props) => {
             </View>
             {!button ? 
             <View style={{marginHorizontal : 40}}>
-                <Btn3 textColor={"white"} btnLabel="Take Leave" Press={() => {
-                    m_props.navigation.navigate("Leave");
+                <Btn3 textColor={"white"} btnLabel="Manage Leaves" Press={() => {
+                    m_props.navigation.navigate("LeaveData");
                 }} width={"100%"} />
                 <Btn3 textColor={"white"} btnLabel="My Detail" Press={() => {
                     setAttendenceObj(false)
@@ -136,8 +136,10 @@ const Profile = (m_props) => {
                 {employee.is_superuser ? <Btn3 textColor={"white"} btnLabel="Employee Detail" Press={() => {
                     m_props.navigation.navigate("EmployeeList");
                 }} width={"100%"} /> : null}
-            </View> : null
-            }
+            </View> 
+            :
+            null
+}
         </Background>
     );
 }

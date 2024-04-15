@@ -4,12 +4,12 @@ import leaves from "../../assets/leaves.jpg";
 
 const Background = ({ children }) => {
   return (
-    <View>
+    <>
       <ImageBackground source={leaves} style={{ height: '100%' }} />
       <View style={{ position: "absolute" }}>
         {children}
       </View>
-    </View>
+    </>
   );
 }
 

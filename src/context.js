@@ -12,6 +12,7 @@ const DataProviderFuncComp = ({ children }) => {
   const [attendenceObj, setAttendenceObj] = useState();
   const [employeesDetail, setEmployeeDetail] = useState();
   const [employeeMonthData, setEmployeeMonthData] = useState();
+  const [leaveData, setLeaveData] = useState();
 
   const getCheckInId = async () => {
     AsyncStorage.getItem("attendence_id").then((value) => {
@@ -26,12 +27,12 @@ const DataProviderFuncComp = ({ children }) => {
         headers: {
           "Authorization": `Bearer ${token}`
         },
-        params : {
-          year : year
+        params: {
+          year: year
         }
       }).then((response) => {
-      setAttendenceObj(response.data);
-     }).catch((error) => {
+        setAttendenceObj(response.data);
+      }).catch((error) => {
         handleErrorFunc(error);
       })
     } catch (error) {
@@ -47,10 +48,10 @@ const DataProviderFuncComp = ({ children }) => {
           "Authorization": `Bearer ${token}`
         }
       }).then(async (response) => {
-        setEmployeeDetail(response.data) 
-    }).catch((error) => {
-console.log(error)
-    })
+        setEmployeeDetail(response.data)
+      }).catch((error) => {
+        console.log(error)
+      })
     } catch (error) {
       handleErrorFunc(error);
       setButton(false);
@@ -94,14 +95,17 @@ console.log(error)
     })
   }
 
-  const handleErrorFunc = (error) => {
+  const handleErrorFunc = async (error) => {
     if (error.response) {
+      if (error.response.status == 401) {
+        await AsyncStorage.removeItem("token");
+        showErrorToast("Error", "Un Authorized User.");
+      }
       if (error.response.status == 400) {
-        console.log(error.response.data.error);
         if (error.response.data.error) {
           showErrorToast("Error", error.response.data.error)
         }
-      
+
         else {
           const responseData = error.response.data;
           if (responseData) {
@@ -130,31 +134,54 @@ console.log(error)
       }
     }
     else {
-      showErrorToast("Error", "Network Connection Error");
+      showErrorToast("Error", error);
+      setInterval(() => {
+        showErrorToast("Error", error.message);
+      }, 4000);
     }
   }
 
-const monthDataFunc = async (year, month, employee_id)=>{
-  try {
+  const monthDataFunc = async (year, month, employee_id) => {
+    try {
+      const token = await AsyncStorage.getItem('accessToken');
+      axios.get(`${API_BASE_URL}/get_month_data/${employee_id}/`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        params: {
+          year: year,
+          month: month
+        }
+      }).then(async (response) => {
+        setEmployeeMonthData(response.data);
+      }).catch((error) => {
+        console.log(error);
+      })
+    } catch (error) {
+      handleErrorFunc(error);
+      setButton(false);
+    }
+  }
+
+  const getLeaveDetailFunc = async () => {
+
+    setLeaveData(null);
     const token = await AsyncStorage.getItem('accessToken');
-    axios.get(`${API_BASE_URL}/get_month_data/${employee_id}/`, {
+    axios.get(`${API_BASE_URL}/leave/`, {
       headers: {
         "Authorization": `Bearer ${token}`
       },
-      params : {
-        year : year,
-        month : month
+      params: {
+        year: new Date().getFullYear()
       }
-    }).then(async (response) => {
-      setEmployeeMonthData(response.data);
-  }).catch((error) => {
-console.log(error);
-  })
-  } catch (error) {
-    handleErrorFunc(error);
-    setButton(false);
+    }).then(async (response) => { 
+      setLeaveData(response.data);
+    }).catch((error) => {
+      if(error.response){
+        console.log(error.response.data);
+      }
+    });
   }
-}
 
 
   return (
@@ -174,8 +201,9 @@ console.log(error);
         setAttendenceObj,
         monthDataFunc,
         employeeMonthData,
-  setEmployeeMonthData
-
+        setEmployeeMonthData,
+        getLeaveDetailFunc,
+        leaveData
       }}
     >
       {children}

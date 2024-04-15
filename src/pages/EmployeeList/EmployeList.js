@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Easing, ScrollView } from 'react-native';
 import { DataContext } from '../../context';
 import LoadingSpinner from '../../component/LoadingSpinner/LoadingSpinner';
 
@@ -7,6 +7,7 @@ const EmployeesList = ({ navigation }) => {
 
   const { getUserAdmin, employeesDetail,setAttendenceObj } = useContext(DataContext);
   const animatedValue = new Animated.Value(0);
+  
   useEffect(() => {
     getUserAdmin();
     Animated.timing(animatedValue, {
@@ -27,7 +28,9 @@ const EmployeesList = ({ navigation }) => {
     });
   
     return (
-      <View style={styles.container}>
+      <View style={{...styles.container }}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={{ marginTop : 20 }}>
         {employeesDetail.map((employee, index) => (
           <Animated.View key={index} style={[styles.employeeItem, { transform: [{ translateY }] }]}>
             <TouchableOpacity
@@ -43,6 +46,8 @@ const EmployeesList = ({ navigation }) => {
             </TouchableOpacity>
           </Animated.View>
         ))}
+        </View>
+        </ScrollView>
       </View>
     );
   };
@@ -79,7 +84,7 @@ const EmployeesList = ({ navigation }) => {
       backgroundColor: '#800080',
     },
     customBackground: {
-      backgroundColor: '#BA55D3', // Lighter pastel purple
+      backgroundColor: '#BA55D3',
     },
   });
 
