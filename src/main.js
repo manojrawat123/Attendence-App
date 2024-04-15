@@ -63,12 +63,10 @@ function Main() {
                             <Stack.Screen name="EmployeeList" component={EmployeesList} />
                             <Stack.Screen name="MonthData" component={EmployeeMonthData} />
                             {/* Leaves  Route */}
-
+                            <Stack.Screen name="Leave" component={TakeCustomLeave} />
                             <Stack.Screen name="LeaveData" component={MainLeave} />
-                            {/* <Stack.Screen name="Leave" component={TakeCustomLeave} /> */}
                             <Stack.Screen name="OneDayLeave" component={OneDayLeave} />
-                            <Stack.Screen name="LeaveData" component={LeaveDetails} />
-                            
+                            <Stack.Screen name="LeaveDetails" component={LeaveDetails} />
                             </>
                             :
                             <>

@@ -6,6 +6,7 @@ import LoadingSpinner from '../../../component/LoadingSpinner/LoadingSpinner';
 import { API_BASE_URL } from '../../../config';
 import { DataContext } from '../../../context';
 import Toast from 'react-native-toast-message';
+import NoDataAvailable from '../../../component/NoDataComp/NoDataComp';
 
 
 const LeaveDetails = ({ navigation }) => {
@@ -57,6 +58,7 @@ const LeaveDetails = ({ navigation }) => {
   });
 
   return (
+<>{leaveData?.length == 0 ? <NoDataAvailable message={"No Leave Taken This Year"}/> : 
     <View style={{ ...styles.container }}>
          <Toast ref={(ref) => Toast.setRef(ref)} />
                   {button ? <LoadingSpinner /> : ""}
@@ -80,7 +82,9 @@ const LeaveDetails = ({ navigation }) => {
           ))}
         </View>
       </ScrollView>
-    </View>
+    </View>}
+</>
+  
   );
 };
 

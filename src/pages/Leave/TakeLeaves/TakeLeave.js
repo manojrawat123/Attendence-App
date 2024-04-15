@@ -25,7 +25,6 @@ const TakeCustomLeave = () => {
     const [Enable, setEnable] = useState("full_day");
     const maxDate = new Date();
     maxDate.setMonth(maxDate.getMonth() + 2);
-
     const formatDate = (date) => {
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
         return date.toLocaleDateString('en-US', options);
