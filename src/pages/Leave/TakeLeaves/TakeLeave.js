@@ -66,7 +66,7 @@ const TakeCustomLeave = () => {
         axios.post(`${API_BASE_URL}/leave/`, {
             date: formattedDate,
             toDate : toformattedDate2,
-            leave_type : Enable
+            leave_type : "full_day"
         }, {
             headers: {
                 "Authorization": `Bearer ${token}`
@@ -149,7 +149,7 @@ const TakeCustomLeave = () => {
                             />
                         )}
                     </View>
-                    <View>
+                    {/* <View>
                         <Picker
                             selectedValue={Enable}
                             style={{
@@ -163,7 +163,7 @@ const TakeCustomLeave = () => {
                             <Picker.Item label="Full Day" value="full_day" />
                             <Picker.Item label="Half Day" value="half_day" />
                         </Picker>
-                    </View>
+                    </View> */}
                     {
                         button ? <LoadingSpinner /> : <Btn textColor={"white"} bgColor={darkGreen} btnLabel="Apply For Leave" Press={takeLeaveFunc} width={"100%"} />
                     }

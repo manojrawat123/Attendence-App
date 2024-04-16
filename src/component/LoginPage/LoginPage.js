@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, Touchable, TouchableOpacity, TextInput, Button, ActivityIndicator } from 'react-native';
-
 import { darkGreen } from '../Constants';
 import Btn from '../Btn';
 import Background from '../Background';
@@ -14,7 +13,6 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import { DataContext } from '../../context';
-
 
 const Login = (m_props) => {
 
