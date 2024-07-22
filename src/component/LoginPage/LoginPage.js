@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, Touchable, TouchableOpacity, TextInput, Button, ActivityIndicator } from 'react-native';
+
 import { darkGreen } from '../Constants';
 import Btn from '../Btn';
 import Background from '../Background';
@@ -13,6 +14,7 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import { DataContext } from '../../context';
+
 
 const Login = (m_props) => {
 
@@ -56,12 +58,18 @@ const Login = (m_props) => {
             onSubmit={(values, actions) => {
               setButton(true);
               axios.post(`${API_BASE_URL}/login/`, values).then((res) => {
+                console.log(res.data);
+                console.log(res.data?.user_id);
                 AsyncStorage.setItem("accessToken", res.data?.token?.access);
                 AsyncStorage.setItem("id", `${res.data?.user.id}`);
                 AsyncStorage.setItem("user", JSON.stringify(res.data?.user));
                 m_props.navigation.popToTop();
                 m_props.navigation.navigate("Profile");
               }).catch((error) => {
+                console.log(error)
+                if(error.response){
+                  console.log({"err.response.data" : err.response.data});
+                }
                 handleErrorFunc(error);                
               }).finally(() => {
                 setButton(false);
@@ -73,7 +81,7 @@ const Login = (m_props) => {
                 {inputLoginArr.map((element, index) => {
                   const borderColor = props.errors[element.name] ? { color: "red", borderSz: 2 } : props.touched[element.name] ? { color: 'green', borderSz: 2 } : { color: 'black', borderSz: 1 }
                   return (
-                    <React.Fragment key={index}>
+                    <>
                       <TextInput
                         key={index} // Added key prop to satisfy React's requirements
                         style={{ borderRadius: 10, color: darkGreen, paddingHorizontal: 10, backgroundColor: 'rgb(220,220, 220)', marginVertical: 10, height: "14%", borderColor: borderColor.color, borderWidth: borderColor.borderSz }}
@@ -91,7 +99,7 @@ const Login = (m_props) => {
                       {props.errors[element.name] ? (
                         <Text style={{ color: "red" }}>{props.errors[element.name]}</Text>
                       ) : null}
-                    </React.Fragment>
+                    </>
                   );
                 })}
                 {button ?

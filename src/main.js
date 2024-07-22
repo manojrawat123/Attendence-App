@@ -13,15 +13,13 @@ import { darkGreen } from './component/Constants';
 import { ActivityIndicator, View } from 'react-native';
 import Background from './component/Background';
 import LoadingSpinner from './component/LoadingSpinner/LoadingSpinner';
+import TakeLeaveScreen from './pages/TakeLeaves/TakeLeave';
 import AttendanceScreen from './pages/attendenceScreen/attendenceScreen';
 import EmployeesList from './pages/EmployeeList/EmployeList';
 import EmployeeMonthData from './pages/EmployeeMonthData/EmpMonDataMain';
-import LeaveDetails from './pages/Leave/LeaveDetails/LeaveDetails';
-import MainLeave from './pages/Leave/LeaveDetails/MainLeave';
-import OneDayLeave from './pages/Leave/TakeLeaves/OneDayLeave';
-import TakeCustomLeave from './pages/Leave/TakeLeaves/TakeLeave';
-
-
+import Batch from './pages/BatchMangement/Batch';
+import AddBatch from './pages/BatchMangement/AddBatch/AddBatch';
+import DisplayBatch from './pages/BatchMangement/DisplayBatch/DisplayBatch';
 const Stack = createNativeStackNavigator();
 
 function Main() {
@@ -58,28 +56,27 @@ function Main() {
                             <Stack.Screen name="Signup2" component={SignUpForm2} />
                             <Stack.Screen name="Signup3" component={SignUpForm4} />
                             <Stack.Screen name="Login" component={Login} />
+
+                            
+                            <Stack.Screen name="AddBatch" component={AddBatch} />
                             <Stack.Screen name="Profile" component={Profile} />
+                            <Stack.Screen name="ManageBatch" component={Batch} />
+                            <Stack.Screen name="Leave" component={TakeLeaveScreen} />
                             <Stack.Screen name="Attendence" component={AttendanceScreen} />
                             <Stack.Screen name="EmployeeList" component={EmployeesList} />
                             <Stack.Screen name="MonthData" component={EmployeeMonthData} />
-                            {/* Leaves  Route */}
-                            <Stack.Screen name="Leave" component={TakeCustomLeave} />
-                            <Stack.Screen name="LeaveData" component={MainLeave} />
-                            <Stack.Screen name="OneDayLeave" component={OneDayLeave} />
-                            <Stack.Screen name="LeaveDetails" component={LeaveDetails} />
+                            <Stack.Screen name="DisplayBatch" component={DisplayBatch} />
                             </>
                             :
                             <>
                             <Stack.Screen name="Profile" component={Profile} />
+                            <Stack.Screen name="Leave" component={TakeLeaveScreen} />
                             <Stack.Screen name="Attendence" component={AttendanceScreen} />
+                            <Stack.Screen name="ManageBatch" component={Batch} />
                             <Stack.Screen name="EmployeeList" component={EmployeesList} />
+                            <Stack.Screen name="AddBatch" component={AddBatch} />
+                            <Stack.Screen name="DisplayBatch" component={DisplayBatch} />
                             <Stack.Screen name="MonthData" component={EmployeeMonthData} />
-                            {/* Leaves  Route */}
-
-                            <Stack.Screen name="Leave" component={TakeCustomLeave} />
-                            <Stack.Screen name="LeaveData" component={MainLeave} />
-                            <Stack.Screen name="OneDayLeave" component={OneDayLeave} />
-                            <Stack.Screen name="LeaveDetails" component={LeaveDetails} />
                             </>
                     }
                 </Stack.Navigator>

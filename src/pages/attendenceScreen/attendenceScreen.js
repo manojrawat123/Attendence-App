@@ -9,12 +9,11 @@ import { useRoute } from '@react-navigation/native';
 
 const AttendanceScreen = ({ navigation }) => {
 
-  
-  const { getAttendenceDetailByYear, attendenceObj,setEmployeeMonthData } = useContext(DataContext);
+  const { getAttendenceDetailByYear, attendenceObj, setEmployeeMonthData } = useContext(DataContext);
   const route = useRoute();
   const { employee, year } = route.params;
   const [selectedYear, setSelectedYear] = useState(year);
-console.log(route)
+  console.log(route)
   useEffect(() => {
     getAttendenceDetailByYear(employee.id, year);
     setSelectedYear(year);
@@ -25,36 +24,36 @@ console.log(route)
       AsyncStorage.setItem('attendenceData', JSON.stringify(attendenceObj));
     }
   }, [attendenceObj]);
-   
+
   if (!attendenceObj) {
     return <LoadingSpinner />;
   }
 
   return (
     <View style={{
-      marginTop : 50
+      marginTop: 50
     }}>
-      <MyButton title={employee.name} onPress={()=>{}} />
-      <MyButton title={new Date().getFullYear()} onPress={()=>{}} />
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} style={{marginBottom : 120}}>
-      {Object.entries(attendenceObj).map(([month, stats], index) => (
-        <Card key={index} style={styles.card} 
-        onPress={()=>{
-  setEmployeeMonthData(null);
-          navigation.navigate('MonthData', { month, "year" : selectedYear , employee_id : employee.id});
-        }}
-        >
-          <Card.Content>
-            <Text style={styles.monthText}>{month}</Text>
-            <View style={styles.statsContainer}>
-              <Text style={styles.statText}>Present: {stats.present}</Text>
-              <Text style={styles.statText}>Half Days: {stats.half_days}</Text>
-              <Text style={styles.statText}>Leave: {stats.leave}</Text>
-            </View>
-          </Card.Content>
-        </Card>
-      ))}
-    </ScrollView>
+      <MyButton title={employee.name} onPress={() => { }} />
+      <MyButton title={new Date().getFullYear()} onPress={() => { }} />
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false} style={{ marginBottom: 120 }}>
+        {Object.entries(attendenceObj).map(([month, stats], index) => (
+          <Card key={index} style={styles.card}
+            onPress={() => {
+              setEmployeeMonthData(null);
+              navigation.navigate('MonthData', { month, "year": selectedYear, employee_id: employee.id });
+            }}
+          >
+            <Card.Content>
+              <Text style={styles.monthText}>{month}</Text>
+              <View style={styles.statsContainer}>
+                <Text style={styles.statText}>Present: {stats.present}</Text>
+                <Text style={styles.statText}>Half Days: {stats.half_days}</Text>
+                <Text style={styles.statText}>Leave: {stats.leave}</Text>
+              </View>
+            </Card.Content>
+          </Card>
+        ))}
+      </ScrollView>
     </View>
   );
 };

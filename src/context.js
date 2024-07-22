@@ -1,23 +1,136 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { createContext, useState } from "react";
-import Toast from "react-native-toast-message";
+import Toast, { SuccessToast } from "react-native-toast-message";
 import { API_BASE_URL } from "./config";
+import { useNavigation } from '@react-navigation/native';
 
 const DataContext = createContext();
 
 const DataProviderFuncComp = ({ children }) => {
-  const [checkinId, setCheckInId] = useState();
+
   const [token, setToken] = useState(false);
   const [attendenceObj, setAttendenceObj] = useState();
   const [employeesDetail, setEmployeeDetail] = useState();
   const [employeeMonthData, setEmployeeMonthData] = useState();
-  const [leaveData, setLeaveData] = useState();
+  const [profileObj, setProfileObj] = useState();
+  const [addBatchPageObj, setAddBatchPageObj] = useState();
+  const [batchDisplayPageArr, setBatchDisplayPageArr] = useState();
 
-  const getCheckInId = async () => {
-    AsyncStorage.getItem("attendence_id").then((value) => {
-      setCheckInId(value);
+  const logoutFunc = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('accessToken');
+      await AsyncStorage.removeItem('sessionid');
+      await AsyncStorage.removeItem('id');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error removing data:', error);
+    }
+  };
+
+  const showSuccessToast = (text1, text2) => {
+    Toast.show(
+      {
+        type: 'success',
+        text1: text1,
+        text2: text2,
+        text1Style: { fontSize: 20, fontWeight: 'bold', color: 'green' },
+        text2Style: { fontSize: 16, color: 'green' },
+        style: { backgroundColor: '#007bff', borderRadius: 10 },
+        topOffset: 0
+      }
+    )
+  };
+
+  const handleErrorFunc = (error) => {
+    console.log(error);
+    if (error.response) {
+      if (error.response.status == 400) {
+        console.log(error.response.data.error);
+        if (error.response.data.error) {
+          showErrorToast("Error", error.response.data.error)
+        }
+
+        else {
+          const responseData = error.response.data;
+          if (responseData) {
+            Object.keys(responseData).forEach(field => {
+              const errorMessages = responseData[field].join('\n');
+              if (field == "non_field_errors") {
+                showErrorToast("Validation Error", `${errorMessages}`);
+              }
+              else {
+                showErrorToast("Validation Error", `${field}: ${errorMessages}`);
+              }
+            });
+
+          }
+        }
+
+      }
+      else if (error.response.status == 500) {
+        showErrorToast("Error", "Internal Server Error");
+      }
+      else if (error.response.status == 401) {
+        showErrorToast("Error", "Unauthorized User");
+      }
+      else {
+        showErrorToast("Error", "Some Error Occured");
+      }
+    }
+    else {
+      showErrorToast("Error", error);
+      setInterval(() => {
+        showErrorToast("Error", error.message);
+      }, 4000);
+    }
+  }
+
+  const commonGetApi = async (route, setParamsData) => {
+    setParamsData();
+    const token = await AsyncStorage.getItem('accessToken');
+    axios.get(`${API_BASE_URL}/${route}/`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    }).then((value) => {
+      setParamsData(value.data);
+    }).catch((err) => {
+      handleErrorFunc(err);
+      logoutFunc();
     });
+  }
+
+  const profileGetFunc = () => {
+    commonGetApi('profile', setProfileObj);
+  }
+
+  const commonGetParamsApi = async (route, query, setParamsData) => {
+    try {
+        setParamsData();
+        const token = await AsyncStorage.getItem('accessToken');
+        axios.get(`${API_BASE_URL}/${route}/`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            },
+            params: query
+        }).then((value)=>{
+          setParamsData(value.data)
+        });
+    } catch (err) {
+        handleErrorFunc(err);
+    }
+}
+
+
+  const getBatchPageFunc = (query) => {
+    commonGetParamsApi('batch', query, setAddBatchPageObj);
+  }
+
+  const getBatchDisplayFunc = (query) => {
+    commonGetParamsApi('batch', query, setBatchDisplayPageArr);
   }
 
   const getAttendenceDetailByYear = async (id, year) => {
@@ -58,20 +171,6 @@ const DataProviderFuncComp = ({ children }) => {
     }
   }
 
-  const showSuccessToast = (text1, text2) => {
-    Toast.show(
-      {
-        type: 'success',
-        text1: text1,
-        text2: text2,
-        text1Style: { fontSize: 20, fontWeight: 'bold', color: 'green' },
-        text2Style: { fontSize: 16, color: 'green' },
-        style: { backgroundColor: '#007bff', borderRadius: 10 },
-        topOffset: 0
-      }
-    )
-  };
-
   const showErrorToast = (text1, text2) => {
     Toast.show(
       {
@@ -95,51 +194,7 @@ const DataProviderFuncComp = ({ children }) => {
     })
   }
 
-  const handleErrorFunc = async (error) => {
-    if (error.response) {
-      if (error.response.status == 401) {
-        await AsyncStorage.removeItem("token");
-        showErrorToast("Error", "Un Authorized User.");
-      }
-      if (error.response.status == 400) {
-        if (error.response.data.error) {
-          showErrorToast("Error", error.response.data.error)
-        }
 
-        else {
-          const responseData = error.response.data;
-          if (responseData) {
-            Object.keys(responseData).forEach(field => {
-              const errorMessages = responseData[field].join('\n');
-              if (field == "non_field_errors") {
-                showErrorToast("Validation Error", `${errorMessages}`);
-              }
-              else {
-                showErrorToast("Validation Error", `${field}: ${errorMessages}`);
-              }
-            });
-
-          }
-        }
-
-      }
-      else if (error.response.status == 500) {
-        showErrorToast("Error", "Internal Server Error");
-      }
-      else if (error.response.status == 401) {
-        showErrorToast("Error", "Unauthorized User");
-      }
-      else {
-        showErrorToast("Error", "Some Error Occured");
-      }
-    }
-    else {
-      showErrorToast("Error", error);
-      setInterval(() => {
-        showErrorToast("Error", error.message);
-      }, 4000);
-    }
-  }
 
   const monthDataFunc = async (year, month, employee_id) => {
     try {
@@ -163,32 +218,41 @@ const DataProviderFuncComp = ({ children }) => {
     }
   }
 
-  const getLeaveDetailFunc = async () => {
-
-    setLeaveData(null);
+  const commonPostApiFunc = async (route, data, setIsLoading, pageFunc = null, query = null) => {
+    setIsLoading(true);
     const token = await AsyncStorage.getItem('accessToken');
-    axios.get(`${API_BASE_URL}/leave/`, {
+    axios.post(`${API_BASE_URL}/${route}/`, data, {
       headers: {
-        "Authorization": `Bearer ${token}`
-      },
-      params: {
-        year: new Date().getFullYear()
+        Authorization: `Bearer ${token}`
       }
-    }).then(async (response) => { 
-      setLeaveData(response.data);
-    }).catch((error) => {
-      if(error.response){
-        console.log(error.response.data);
+    }).then((value) => {
+      console.log('run');
+      showSuccessToast("Successfully Updated!", 'Batch Added Successfully!');
+      console.log(value);
+      if (pageFunc) {
+        if (query) {
+          pageFunc(query);
+        }
+        else {
+          pageFunc();
+        }
+        console.log('run');
       }
-    });
+    }).catch((err) => {
+      console.log(err);
+      handleErrorFunc();
+    }).finally(() => {
+      setIsLoading(false);
+    })
   }
+
 
 
   return (
     <DataContext.Provider
       value={{
-        checkinId,
-        getCheckInId,
+        // checkinId,
+        // getCheckInId,
         token,
         getUserToken,
         showErrorToast,
@@ -202,8 +266,14 @@ const DataProviderFuncComp = ({ children }) => {
         monthDataFunc,
         employeeMonthData,
         setEmployeeMonthData,
-        getLeaveDetailFunc,
-        leaveData
+        profileGetFunc,
+        profileObj,
+        getBatchDisplayFunc,
+        batchDisplayPageArr,
+        getBatchPageFunc,
+        addBatchPageObj,
+        commonPostApiFunc,
+
       }}
     >
       {children}
